@@ -1,18 +1,22 @@
 //将之前的on和fire方法抽象出来，成为一个widget类，以后可以将该类扩展至其他组件中！
 define(['jquery'],function($){
+
 	function Widget(){
 		this.boundingBox = null;//属性：最外层容器（将boundingBox由一个变量上升到widget的一个属性）
 		// this.handlers = {};
 	}
+	
 	Widget.prototype = {
-		on: function(type,handler){//事件类型和回调函数
+
+		on: function(type,handler){				//事件类型和回调函数
 	 		if (typeof this.handlers[type] == "undefined") {
 	 			this.handlers[type] = [];
 	 		};
 	 		this.handlers[type].push(handler);
-	 		return this; //通过return this实现连缀语法，即链式调用
+	 		return this; 						//通过return this实现连缀语法，即链式调用
 	 	},
-	 	fire: function(type,data){//事件类型和回调函数需要传入的参数
+
+	 	fire: function(type,data){				//事件类型和回调函数需要传入的参数
 	 		if (this.handlers[type] instanceof Array) {
 	 			var handlers = this.handlers[type];
 	 			for (var i = 0; i < handlers.length; i++) {
@@ -22,7 +26,7 @@ define(['jquery'],function($){
 	 		return this;
 	 	},
 
-	 	render: function(container){ //方法：渲染组件
+	 	render: function(container){ 	//方法：渲染组件
 	 		this.renderUI();
 	 		this.handlers = {};
 	 		this.bindUI();

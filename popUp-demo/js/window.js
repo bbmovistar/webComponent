@@ -1,4 +1,5 @@
 define(['widget','jquery'],function(widget,$){
+
 	function Window(){
 
 		//弹窗默认设置
@@ -21,6 +22,7 @@ define(['widget','jquery'],function(widget,$){
 			//遮罩层
 			hasMask: true
 		};
+
 		this.handlers = {};
 	};
 
@@ -28,29 +30,33 @@ define(['widget','jquery'],function(widget,$){
 	Window.prototype= $.extend({},new widget.Widget(),{
 
 	 	renderUI: function(){
+
 	 		this.boundingBox = $('<div class="window_boundingBox">' +
-	 								'<div class="window_header">' + CFG.title + '</div>' +
-	 								'<div class="window_body">' + CFG.content + '</div>' +
-	 								'<div class="window_footer"><input class="window_alertBtn" type="button" value="'+CFG.textForAlertBtn+'"></div>' +
+	 								'<div class="window_header">' + this.cfg.title + '</div>' +
+	 								'<div class="window_body">' + this.cfg.content + '</div>' +
+	 								'<div class="window_footer"><input class="window_alertBtn" type="button" value="'+this.cfg.textForAlertBtn+'"></div>' +
 	 							'</div>'
 	 						);
+
+	 		if (this.cfg.hasCloseBtn) {
+	 			this.boundingBox.append('<span class="window_closeBtn">X</span>');
+	 		}
 
 	 		if (this.cfg.hasMask) {
 	 			this._mask = $('<div class="window_mask"></div>');
 	 			this._mask.appendTo("body");
 	 		};
 
-	 		if (this.hasCloseBtn) {
-	 			this.boundingBox.append('<span class="window_closeBtn">X</span>');
-	 		}
 	 		this.boundingBox.appendTo(document.body);
+
 	 	},
 
 	 	bindUI: function(){
+
 	 		var that = this;
 
-	 		this.boundingBox.delegate('.window_alertBtn','click',function(){
-	 			that.fire("alert");
+	 		this.boundingBox.delegate('.window_alertBtn','click',function(){ //这里是匿名函数，如果不将this赋值给that
+	 			that.fire("alert");											 //执行匿名函数中的代码将会报错，this会指向浏览器window对象
 	 			that.destroy();
 	 		}).delegate('.window_closeBtn','click',function(){
 	 			that.fire("close");
@@ -58,30 +64,36 @@ define(['widget','jquery'],function(widget,$){
 	 		});
 
 	 		if (this.cfg.handlerForAlertBtn) {
-	 			this.on("alert",handlerForAlertBtn);
+	 			this.on("alert",this.cfg.handlerForAlertBtn);
 	 		};
 
 	 		if (this.cfg.handlerForCloseBtn) {
-	 			this.on("close",handlerForCloseBtn);
+	 			this.on("close",this.cfg.handlerForCloseBtn);
 	 		};
+
 	 	},
 
 	 	syncUI: function(){ 
+
 	 		this.boundingBox.css({
-	 			width: CFG.width + "px",
-	 			height: CFG.height + "px",
-	 			left: (CFG.x || (window.innerWidth - CFG.width)/2) + "px",
-	 			top : (CFG.y || (window.innerHeight - CFG.height)/2 + "px")
+	 			width: this.cfg.width + "px",
+	 			height: this.cfg.height + "px",
+	 			left: (this.cfg.x || (window.innerWidth - this.cfg.width)/2) + "px",
+	 			top : (this.cfg.y || (window.innerHeight - this.cfg.height)/2 + "px")
 	 		});
 
 	 		if (this.cfg.skinClassName) {
 	 			this.boundingBox.addClassName(this.cfg.skinClassName);
 	 		};
+
 	 	},
 
 	 	destructor: function(){
+
 	 		this._mask && this._mask.remove();
+
 	 	},
+
 	 	//alert弹窗方法
 	 	alert: function(cfg){
 
@@ -89,67 +101,12 @@ define(['widget','jquery'],function(widget,$){
 	 		this.render();
 	 		return this;
 
-	 		// var CFG = $.extend(this.cfg,cfg);
-	 		// //遮罩层
-	 		// mask = null;
-	 		// that = this;
-	 		// if (CFG.hasMask) {
-	 		// 	mask = $('<div class="window_mask"></div>');
-	 		// 	mask.appendTo('body');
-	 		// };
-	 		// //弹窗框
-	 		// var boundingBox = $('<div class="window_boundingBox">' +
-	 		// 						'<div class="window_header">' + CFG.title + '</div>' +
-	 		// 						'<div class="window_body">' + CFG.content + '</div>' +
-	 		// 						'<div class="window_footer"><input class="window_alertBtn" type="button" value="'+CFG.textForAlertBtn+'"></div>' +
-	 		// 					'</div>'
-	 		// 				);
-
-	 		// boundingBox.appendTo('body');
-
-	 		// //设置弹窗的样式
-	 		// boundingBox.css({
-	 		// 	width: CFG.width + "px",
-	 		// 	height: CFG.height + "px",
-	 		// 	left: (CFG.x || (window.innerWidth - CFG.width)/2) + "px",
-	 		// 	top : (CFG.y || (window.innerHeight - CFG.height)/2 + "px")
-	 		// });
-
-	 		// //设置关闭按钮
-	 		// if (CFG.hasCloseBtn) {
-	 		// 	closeBtn = $('<span class="window_closeBtn">X</span>');
-	 		// 	closeBtn.appendTo(boundingBox);
-	 		// };
-
-	 		// var alertBtn = boundingBox.find(".window_footer input");
-	 		// alertBtn.click(function(){
-	 		// 	// CFG.handlerForAlertBtn && CFG.handlerForAlertBtn();
-	 		// 	boundingBox.remove();
-	 		// 	mask && mask.remove();
-	 		// 	that.fire("alert");
-	 		// });
-
-	 		// closeBtn.click(function(){
-	 		// 		// CFG.handlerForCloseBtn && CFG.handlerForCloseBtn();								
-	 		// 		boundingBox.remove();
-	 		// 		mask && mask.remove();
-	 		// 		that.fire("close");
-	 		// });
-
-	 		// if (CFG.handlerForAlertBtn) {
-	 		// 	this.on("alert",CFG.handlerForAlertBtn);
-	 		// };
-
-	 		// if (CFG.handlerForCloseBtn) {
-	 		// 	this.on("close",CFG.handlerForCloseBtn);
-	 		// };
-
-	 		// //定制皮肤
-	 		// if(CFG.skinClassName){
-	 		// 	boundingBox.addClassName(CFG.skinClassName);
-	 		// }
 	 	},
+
+	 	//confirm弹窗方法
 	 	confirm: function(){},
+
+	 	//prompt弹窗方法
 	 	prompt: function(){}
 	 });
 
