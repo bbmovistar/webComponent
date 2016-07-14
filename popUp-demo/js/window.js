@@ -9,21 +9,27 @@ define(['widget','jquery'],function(widget,$){
 			//设置内容和回调的默认值
 			content: '',
 			title: '系统消息',
-			//定制alert弹窗按钮文案
+
+			//定制alert弹窗
 			textForAlertBtn: "确定",
-
-			//定制confirm弹窗按钮文案
-			textForConfirmBtn: "确定",
-			textForCancelBtn: "取消",
-
 			//确定alert按钮回调函数
 			handlerForAlertBtn: null,
 			//关闭按钮回调函数
 			handlerForCloseBtn: null,
 
+			//定制confirm弹窗按钮文案
+			textForConfirmBtn: "确定",
+			textForCancelBtn: "取消",
 			//confirm按钮回调函数
 			handlerForConfirmBtn: null,
 			handlerForCancelBtn: null,
+
+			//定制propmt弹窗
+			textForPromptBtn: "确定",
+			isPromptInputPassword: false,
+			defaultValueForPromptInput: "",
+			maxLengthForPromptInput: 10,
+			handlerForPromptBtn: null,
 
 			//关闭按钮
 			hasCloseBtn: false,
@@ -51,6 +57,10 @@ define(['widget','jquery'],function(widget,$){
 	 			case "confirm":
 	 				footerContent = '<input type="button" class="window_confirmBtn" value="' +this.cfg.textForConfirmBtn +'"><input type="button" class="window_cancelBtn" value="'+this.cfg.textForCancelBtn +'">';
 	 				break;
+
+	 			case "prompt":
+	 				this.cfg.content += '<p class="window_promptInputWrapper><input type="'+(this.cfg.isPromptInputPassword? "password" : "text") +
+	 				 					'" value="'+ this.cfg.defaultValueForPromptInput +'" maxlength="' +this.cfg.maxLengthForPromptInput +'" class="window_promptInput"></p>'
 	 		}
 
 	 		this.boundingBox = $('<div class="window_boundingBox">' +
@@ -105,8 +115,7 @@ define(['widget','jquery'],function(widget,$){
 
 	 		if (this.cfg.handlerForCancelBtn) {
 	 			this.on('cancel',this.cfg.handlerForCancelBtn);
-	 		};
-
+	 		};<
 	 	},
 
 	 	syncUI: function(){ 
