@@ -36,12 +36,12 @@ require(['jquery','window'],function($,w){
 			content: "您确定要删除这个文件吗？",
 			textForConfirmBtn: "是",
 			textForCancelBtn: "否",
-			// handlerForConfirmBtn: function(){
-			// 	alert("确定");
-			// },
-			// handlerForCancelBtn: function(){
-			// 	alert("cancel");
-			// }
+			handlerForConfirmBtn: function(){
+				alert("确定");
+			},
+			handlerForCancelBtn: function(){
+				alert("取消");
+			}
 
 		}).on("confirm",function(){
 			alert("confirm");
