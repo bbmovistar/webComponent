@@ -22,6 +22,31 @@ require(['jquery','window'],function($,w){
 			handlerForCloseBtn: function(){
 				alert("you click the close button");
 			}
+			
+		})
+	});
+
+	$('#b').click(function(){
+		new w.Window().confirm({
+
+			title: '提示',
+			width: 300,
+			height: 150,
+			y: 50,
+			content: "您确定要删除这个文件吗？",
+			textForConfirmBtn: "是",
+			textForCancelBtn: "否",
+			// handlerForConfirmBtn: function(){
+			// 	alert("确定");
+			// },
+			// handlerForCancelBtn: function(){
+			// 	alert("cancel");
+			// }
+
+		}).on("confirm",function(){
+			alert("confirm");
+		}).on("cancel",function(){
+			alert("cancel");
 		})
 	});
 });

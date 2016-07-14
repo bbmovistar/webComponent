@@ -27,6 +27,16 @@
 .window_body{
 	padding: 10px;
 }
+.window_footer{
+	position: absolute;
+	bottom: 0;
+	padding-bottom: 10px;
+	text-align: center;
+	width: 100%;
+}
+.window_cancelBtn{
+	margin-left: 20px;
+}
 .window_closeBtn{
 	position: absolute;
 	right: 2px;

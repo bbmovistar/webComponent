@@ -9,12 +9,22 @@ define(['widget','jquery'],function(widget,$){
 			//设置内容和回调的默认值
 			content: '',
 			title: '系统消息',
-			//定制按钮文案
+			//定制alert弹窗按钮文案
 			textForAlertBtn: "确定",
-			//确定按钮回调函数
+
+			//定制confirm弹窗按钮文案
+			textForConfirmBtn: "确定",
+			textForCancelBtn: "取消",
+
+			//确定alert按钮回调函数
 			handlerForAlertBtn: null,
 			//关闭按钮回调函数
 			handlerForCloseBtn: null,
+
+			//confirm按钮回调函数
+			handlerForConfirmBtn: null,
+			handlerForCancelBtn: null,
+
 			//关闭按钮
 			hasCloseBtn: false,
 			//定制皮肤
@@ -31,10 +41,22 @@ define(['widget','jquery'],function(widget,$){
 
 	 	renderUI: function(){
 
+	 		var footerContent = "";
+
+	 		switch(this.cfg.winType){
+	 			case "alert" :
+	 				footerContent = '<input class=window_alertBtn type="button" value="' +this.cfg.textForAlertBtn+ '">';
+	 				break;
+
+	 			case "confirm":
+	 				footerContent = '<input type="button" class="window_confirmBtn" value="' +this.cfg.textForConfirmBtn +'"><input type="button" class="window_cancelBtn" value="'+this.cfg.textForCancelBtn +'">';
+	 				break;
+	 		}
+
 	 		this.boundingBox = $('<div class="window_boundingBox">' +
 	 								'<div class="window_header">' + this.cfg.title + '</div>' +
 	 								'<div class="window_body">' + this.cfg.content + '</div>' +
-	 								'<div class="window_footer"><input class="window_alertBtn" type="button" value="'+this.cfg.textForAlertBtn+'"></div>' +
+	 								'<div class="window_footer">' + footerContent +
 	 							'</div>'
 	 						);
 
@@ -61,6 +83,12 @@ define(['widget','jquery'],function(widget,$){
 	 		}).delegate('.window_closeBtn','click',function(){
 	 			that.fire("close");
 	 			that.destroy();
+	 		}).delegate('.window_confirmBtn','click',function(){
+	 			that.fire("confirm");
+	 			that.destroy();
+	 		}).delegate('.window_cancelBtn','click',function(){
+	 			that.fire("cancel");
+	 			that.destroy();
 	 		});
 
 	 		if (this.cfg.handlerForAlertBtn) {
@@ -69,6 +97,14 @@ define(['widget','jquery'],function(widget,$){
 
 	 		if (this.cfg.handlerForCloseBtn) {
 	 			this.on("close",this.cfg.handlerForCloseBtn);
+	 		};
+
+	 		if (this.cfg.handlerForConfirmBtn) {
+	 			this.on('confirm',this.cfg.handlerForConfirmBtn);
+	 		};
+
+	 		if (this.cfg.handlerForCancelBtn) {
+	 			this.on('cancel',this.cfg.handlerForCancelBtn);
 	 		};
 
 	 	},
@@ -97,14 +133,20 @@ define(['widget','jquery'],function(widget,$){
 	 	//alert弹窗方法
 	 	alert: function(cfg){
 
-	 		$.extend(this.cfg,cfg);
+	 		$.extend(this.cfg,cfg,{winType: "alert"});
 	 		this.render();
 	 		return this;
 
 	 	},
 
 	 	//confirm弹窗方法
-	 	confirm: function(){},
+	 	confirm: function(cfg){
+
+	 		$.extend(this.cfg,cfg,{winType: "confirm"});
+	 		this.render();
+	 		return this;
+
+	 	},
 
 	 	//prompt弹窗方法
 	 	prompt: function(){}
