@@ -51,7 +51,7 @@ define(['widget','jquery'],function(widget,$){
 
 	 		switch(this.cfg.winType){
 	 			case "alert" :
-	 				footerContent = '<input class=window_alertBtn type="button" value="' +this.cfg.textForAlertBtn+ '">';
+	 				footerContent = '<input class="window_alertBtn" type="button" value="' +this.cfg.textForAlertBtn+ '">';
 	 				break;
 
 	 			case "confirm":
@@ -59,8 +59,11 @@ define(['widget','jquery'],function(widget,$){
 	 				break;
 
 	 			case "prompt":
-	 				this.cfg.content += '<p class="window_promptInputWrapper><input type="'+(this.cfg.isPromptInputPassword? "password" : "text") +
-	 				 					'" value="'+ this.cfg.defaultValueForPromptInput +'" maxlength="' +this.cfg.maxLengthForPromptInput +'" class="window_promptInput"></p>'
+	 				this.cfg.content += '<p class="window_promptInputWrapper"><input type="'+(this.cfg.isPromptInputPassword? "password" : "text") +
+	 				 					'" value="'+ this.cfg.defaultValueForPromptInput +'" maxlength="' +this.cfg.maxLengthForPromptInput +'" class="window_promptInput"></p>';
+
+	 				footerContent = '<input class="window_promptBtn" type="button" value="' +this.cfg.textForPromptBtn+ '" ><input class="window_cancelBtn" type="button" value="'+this.cfg.textForCancelBtn +'" >';
+	 				break;
 	 		}
 
 	 		this.boundingBox = $('<div class="window_boundingBox">' +
@@ -69,6 +72,8 @@ define(['widget','jquery'],function(widget,$){
 	 								'<div class="window_footer">' + footerContent +
 	 							'</div>'
 	 						);
+
+	 		this._promptInput = this.boundingBox.find(".window_promptInput");
 
 	 		if (this.cfg.hasCloseBtn) {
 	 			this.boundingBox.append('<span class="window_closeBtn">X</span>');
@@ -99,7 +104,10 @@ define(['widget','jquery'],function(widget,$){
 	 		}).delegate('.window_cancelBtn','click',function(){
 	 			that.fire("cancel");
 	 			that.destroy();
-	 		});
+	 		}).delegate('.window_promptBtn','click',function(){
+	 			that.fire('prompt',that._promptInput.val());
+	 			that.destroy();
+	 		})
 
 	 		if (this.cfg.handlerForAlertBtn) {
 	 			this.on("alert",this.cfg.handlerForAlertBtn);
@@ -115,7 +123,11 @@ define(['widget','jquery'],function(widget,$){
 
 	 		if (this.cfg.handlerForCancelBtn) {
 	 			this.on('cancel',this.cfg.handlerForCancelBtn);
-	 		};<
+	 		};
+
+	 		if (this.cfg.handlerForPromptBtn) {
+	 			this.on('prompt',this.cfg.handlerForPromptBtn);
+	 		};
 	 	},
 
 	 	syncUI: function(){ 
@@ -158,7 +170,13 @@ define(['widget','jquery'],function(widget,$){
 	 	},
 
 	 	//prompt弹窗方法
-	 	prompt: function(){}
+	 	prompt: function(cfg){
+
+	 		$.extend(this.cfg,cfg,{winType: "prompt"});
+	 		this.render();
+	 		this._promptInput.focus();
+	 		return this;
+	 	}
 	 });
 
 	 return {

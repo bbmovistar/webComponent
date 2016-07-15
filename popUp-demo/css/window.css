@@ -46,6 +46,9 @@
 	background-color: #fff;
 	cursor: pointer;
 }
+.window_promptInputWrapper{
+	text-align: center;
+}
 .window_mask{
 	width: 100%;
 	height: 100%;
