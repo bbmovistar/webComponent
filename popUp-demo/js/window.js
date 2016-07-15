@@ -31,6 +31,12 @@ define(['widget','jquery'],function(widget,$){
 			maxLengthForPromptInput: 10,
 			handlerForPromptBtn: null,
 
+			//定制common弹窗
+			textForCommonBtn: "保存",
+			defaultValueForCommonInput: "",
+			maxLengthForCommonInput: 11,
+			handlerForCommonBtn: null,
+
 			//关闭按钮
 			hasCloseBtn: false,
 			//定制皮肤
@@ -64,16 +70,29 @@ define(['widget','jquery'],function(widget,$){
 
 	 				footerContent = '<input class="window_promptBtn" type="button" value="' +this.cfg.textForPromptBtn+ '" ><input class="window_cancelBtn" type="button" value="'+this.cfg.textForCancelBtn +'" >';
 	 				break;
+
+	 			case "common":
+	 				this.cfg.content += '<form><label for="football">足球场：</label><input type="text" name="telephone" id="football" value="' +this.cfg.defaultValueForCommonInput+ '" maxlength="' +this.cfg.maxLengthForCommonInput+ '" class="window_commonInput"></form>';
+
+	 				footerContent = '<input class="window_commonBtn" type="button" value="' +this.cfg.textForCommonBtn+ '"><input class="window_cancelBtn" type="button" value="' +this.cfg.textForCancelBtn +'">';
+	 				break;
+
 	 		}
 
 	 		this.boundingBox = $('<div class="window_boundingBox">' +
-	 								'<div class="window_header">' + this.cfg.title + '</div>' +
+	 								// '<div class="window_header">' + this.cfg.title + '</div>' +
 	 								'<div class="window_body">' + this.cfg.content + '</div>' +
-	 								'<div class="window_footer">' + footerContent +
+	 								'<div class="window_footer">' + footerContent + '</div>' +
 	 							'</div>'
 	 						);
 
+	 		if(this.cfg.winType != "common"){
+	 			this.boundingBox.prepend('<div class="window_header">' + this.cfg.title + '</div>');
+	 			// this.boundingBox.append('<div class="window_footer">' + footerContent + '</div>');
+	 		}
+
 	 		this._promptInput = this.boundingBox.find(".window_promptInput");
+	 		this._commonInput = this.boundingBox.find('.window_commonInput');
 
 	 		if (this.cfg.hasCloseBtn) {
 	 			this.boundingBox.append('<span class="window_closeBtn">X</span>');
@@ -107,6 +126,9 @@ define(['widget','jquery'],function(widget,$){
 	 		}).delegate('.window_promptBtn','click',function(){
 	 			that.fire('prompt',that._promptInput.val());
 	 			that.destroy();
+	 		}).delegate('.window_commonBtn','click',function(){
+	 			that.fire('common',that._commonInput.val());
+	 			that.destory();
 	 		})
 
 	 		if (this.cfg.handlerForAlertBtn) {
@@ -127,6 +149,10 @@ define(['widget','jquery'],function(widget,$){
 
 	 		if (this.cfg.handlerForPromptBtn) {
 	 			this.on('prompt',this.cfg.handlerForPromptBtn);
+	 		};
+
+	 		if (this.cfg.handlerForCommonBtn) {
+	 			this.on('common',this.cfg.handlerForCommonBtn);
 	 		};
 	 	},
 
@@ -175,6 +201,14 @@ define(['widget','jquery'],function(widget,$){
 	 		$.extend(this.cfg,cfg,{winType: "prompt"});
 	 		this.render();
 	 		this._promptInput.focus();
+	 		return this;
+	 	},
+
+	 	//common弹窗方法
+	 	common: function(cfg){
+
+	 		$.extend(this.cfg,cfg,{winType: "common"});
+	 		this.render();
 	 		return this;
 	 	}
 	 });

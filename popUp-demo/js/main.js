@@ -68,4 +68,21 @@ require(['jquery','window'],function($,w){
 			}
 		})
 	});
+
+	$('#d').click(function(){
+		new w.Window().common({
+			width: 400,
+			height: 300,
+			y: 50,
+			textForCommonBtn: "保存",
+			textForCancelBtn: "取消",
+			defaultValueForCommonInput: "12345678912",
+			handlerForCommonBtn: function(inputValue){
+				alert("您保存的手机号是：" + inputValue);
+			},
+			handlerForCancelBtn: function(){
+				alert("取消");
+			}
+		})
+	});
 });
